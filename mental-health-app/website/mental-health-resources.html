@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Health Resources - StudentWell</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+</head>
+<body>
+    <header>
+        <button class="profile-top-btn" onclick="window.location.href='profile.html'">
+            <img class="profile-top-avatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="User Avatar">
+            <span class="profile-top-name">John Doe</span>
+        </button>
+        <div class="logo" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <img src="assets/images/Screenshot 2025-05-16 120317.png" alt="StudentWell Logo">
+        </div>
+        <p class="tagline">Supporting Student Mental Health Together</p>
+        <nav>
+            <ul>
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="group-chat.html"><i class="fas fa-comments"></i> Group Chat</a></li>
+                <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main class="resources-main">
+        <section class="resources-section" data-aos="fade-up">
+            <h2>Mental Health Resources</h2>
+            <div class="resources-card-grid">
+                <!-- Resource Card 1 -->
+                <div class="resource-card">
+                    <i class="fas fa-spa"></i>
+                    <h3>Coping with Stress</h3>
+                    <p>Learn practical strategies to manage stress and build resilience in daily life.</p>
+                    <a href="#" class="resource-link">Read More <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <!-- Resource Card 2 -->
+                <div class="resource-card">
+                    <i class="fas fa-brain"></i>
+                    <h3>Mindfulness Basics</h3>
+                    <p>Discover mindfulness techniques to improve focus and emotional well-being.</p>
+                    <a href="#" class="resource-link">Read More <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <!-- Resource Card 3 -->
+                <div class="resource-card">
+                    <i class="fas fa-heartbeat"></i>
+                    <h3>Self-Care Checklist</h3>
+                    <p>Download our self-care checklist to help you maintain a healthy routine.</p>
+                    <a href="#" class="resource-link">Download <i class="fas fa-download"></i></a>
+                </div>
+                <!-- Resource Card 4 -->
+                <div class="resource-card">
+                    <i class="fas fa-hands-helping"></i>
+                    <h3>Helplines & Support</h3>
+                    <p>Find national and campus helplines for immediate support and guidance.</p>
+                    <a href="#" class="resource-link">View List <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 1000, once: true });
+    </script>
+    <style>
+    .resources-main {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem 1rem 3rem 1rem;
+    }
+    .resources-section h2 {
+        text-align: center;
+        color: #173D7A;
+        margin-bottom: 2rem;
+    }
+    .resources-card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 2rem;
+        margin-top: 1.5rem;
+    }
+    .resource-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 2px 8px rgba(89,198,203,0.08);
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 2rem 1.5rem 1.5rem 1.5rem;
+        transition: box-shadow 0.2s;
+        position: relative;
+    }
+    .resource-card i {
+        font-size: 2.2rem;
+        color: #59c6cb;
+        margin-bottom: 1rem;
+    }
+    .resource-card h3 {
+        color: #173D7A;
+        margin-bottom: 0.7rem;
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+    .resource-card p {
+        color: #7a8fa6;
+        margin-bottom: 1.2rem;
+        font-size: 1rem;
+    }
+    .resource-link {
+        color: #59c6cb;
+        font-weight: 500;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        transition: color 0.2s;
+    }
+    .resource-link:hover {
+        color: #173D7A;
+    }
+    .resource-card:hover {
+        box-shadow: 0 6px 24px rgba(89,198,203,0.18);
+    }
+    @media (max-width: 768px) {
+        .resources-card-grid {
+            gap: 1.2rem;
+        }
+        .resource-card {
+            padding: 1.2rem 1rem 1rem 1rem;
+        }
+        .resource-card h3 {
+            font-size: 1.05rem;
+        }
+    }
+    </style>
+</body>
+</html> 

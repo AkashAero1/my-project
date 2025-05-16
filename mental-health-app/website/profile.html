@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - StudentWell</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <a href="index.html" class="btn secondary" style="position:absolute;left:2rem;top:2rem;">&larr; Home</a>
+        <h1 style="text-align:center;margin-top:2rem;">My Profile</h1>
+    </header>
+    <main>
+        <section class="profile-section" id="profile-section">
+            <div class="profile-card" id="profile-card">
+                <img class="profile-avatar" id="profile-avatar" src="" alt="User Avatar">
+                <div class="profile-info">
+                    <h3 class="profile-name" id="profile-name"></h3>
+                    <p class="profile-email" id="profile-email"></p>
+                    <input type="text" id="edit-username" placeholder="Edit Username" style="display:none;" />
+                    <input type="text" id="edit-avatar" placeholder="Edit Avatar URL" style="display:none;" />
+                    <button class="btn secondary" id="edit-btn">Edit Profile</button>
+                    <button class="btn primary" id="save-btn" style="display:none;">Save</button>
+                    <button class="btn secondary" id="logout-btn">Logout</button>
+                    <p id="profile-error" class="auth-error"></p>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script>
+        // Require login
+        const token = localStorage.getItem('token');
+        if (!token) window.location.href = 'login.html';
+        const username = localStorage.getItem('username');
+        const avatar = localStorage.getItem('avatar');
+        document.getElementById('profile-name').textContent = username;
+        document.getElementById('profile-avatar').src = avatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(username || 'U');
+        // Fetch email from backend
+        fetch('http://localhost:3001/api/me', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        })
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('profile-email').textContent = data.email || '';
+        });
+        // Edit profile
+        const editBtn = document.getElementById('edit-btn');
+        const saveBtn = document.getElementById('save-btn');
+        const editUsername = document.getElementById('edit-username');
+        const editAvatar = document.getElementById('edit-avatar');
+        editBtn.onclick = () => {
+            editUsername.style.display = 'block';
+            editAvatar.style.display = 'block';
+            saveBtn.style.display = 'inline-block';
+            editBtn.style.display = 'none';
+            editUsername.value = username;
+            editAvatar.value = avatar;
+        };
+        saveBtn.onclick = async () => {
+            const newUsername = editUsername.value;
+            const newAvatar = editAvatar.value;
+            const error = document.getElementById('profile-error');
+            error.textContent = '';
+            try {
+                const res = await fetch('http://localhost:3001/api/me', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ username: newUsername, avatar: newAvatar })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    localStorage.setItem('username', data.username);
+                    localStorage.setItem('avatar', data.avatar || '');
+                    document.getElementById('profile-name').textContent = data.username;
+                    document.getElementById('profile-avatar').src = data.avatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(data.username || 'U');
+                    editUsername.style.display = 'none';
+                    editAvatar.style.display = 'none';
+                    saveBtn.style.display = 'none';
+                    editBtn.style.display = 'inline-block';
+                } else {
+                    error.textContent = data.message || 'Update failed';
+                }
+            } catch {
+                error.textContent = 'Network error';
+            }
+        };
+        // Logout
+        document.getElementById('logout-btn').onclick = () => {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        };
+    </script>
+</body>
+</html> 

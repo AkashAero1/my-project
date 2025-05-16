@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Chat - StudentWell</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <a href="index.html" class="btn secondary" style="position:absolute;left:2rem;top:2rem;">&larr; Home</a>
+        <h1 style="text-align:center;margin-top:2rem;">Group Chat</h1>
+    </header>
+    <main>
+        <section class="chat-section whatsapp-chat">
+            <div class="chat-window" id="chat-window"></div>
+            <div id="typing-indicator" style="min-height:1.5em;color:#59c6cb;font-style:italic;"></div>
+            <form id="chat-form" class="chat-form whatsapp-input-bar">
+                <input id="chat-input" type="text" placeholder="Type your message..." autocomplete="off" required />
+                <button type="submit" class="btn primary"><i class="fas fa-paper-plane"></i></button>
+            </form>
+        </section>
+    </main>
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script>
+        // Remove login requirement for group chat
+        // const token = localStorage.getItem('token');
+        // if (!token) {
+        //     window.location.href = 'login.html';
+        // }
+        const token = localStorage.getItem('token');
+        const username = localStorage.getItem('username') || 'Anonymous';
+        const avatar = localStorage.getItem('avatar') || '';
+
+        const chatWindow = document.getElementById('chat-window');
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+        const typingIndicator = document.getElementById('typing-indicator');
+
+        // Fetch chat history
+        fetch('http://localhost:3001/api/messages', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        })
+        .then(res => res.json())
+        .then(messages => {
+            messages.forEach(msg => addMessage(msg));
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        });
+
+        // Connect to Socket.io with JWT
+        const socket = io('http://localhost:3001', {
+            auth: { token }
+        });
+
+        // Typing indicator
+        let typingTimeout;
+        chatInput.addEventListener('input', () => {
+            socket.emit('typing', chatInput.value.length > 0);
+            clearTimeout(typingTimeout);
+            typingTimeout = setTimeout(() => {
+                socket.emit('typing', false);
+            }, 1000);
+        });
+
+        socket.on('typing', ({ username: typingUser, isTyping }) => {
+            if (isTyping && typingUser !== username) {
+                typingIndicator.textContent = typingUser + ' is typing...';
+            } else {
+                typingIndicator.textContent = '';
+            }
+        });
+
+        // Receive chat messages
+        socket.on('chat message', function(msg) {
+            addMessage(msg);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        });
+
+        // Send chat messages
+        chatForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (chatInput.value.trim() !== '') {
+                socket.emit('chat message', chatInput.value);
+                chatInput.value = '';
+                socket.emit('typing', false);
+            }
+        });
+
+        // Add message to chat window (WhatsApp style)
+        function addMessage(msg) {
+            const isSelf = msg.username === username;
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'chat-message-bubble ' + (isSelf ? 'self' : 'other');
+            msgDiv.innerHTML = `
+                <div class="bubble-meta">
+                    <img src="${msg.avatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(msg.username || 'U')}" alt="avatar" class="bubble-avatar">
+                    <span class="bubble-username">${msg.username || 'Unknown'}</span>
+                </div>
+                <div class="bubble-text">${msg.text}</div>
+                <div class="bubble-time">${msg.createdAt ? new Date(msg.createdAt).toLocaleTimeString() : ''}</div>
+            `;
+            chatWindow.appendChild(msgDiv);
+        }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Planner - StudentWell</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+</head>
+<body>
+    <header>
+        <button class="profile-top-btn" onclick="window.location.href='profile.html'">
+            <img class="profile-top-avatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="User Avatar">
+            <span class="profile-top-name">John Doe</span>
+        </button>
+        <div class="logo" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <img src="assets/images/Screenshot 2025-05-16 120317.png" alt="StudentWell Logo">
+        </div>
+        <p class="tagline">Supporting Student Mental Health Together</p>
+        <nav>
+            <ul>
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="group-chat.html"><i class="fas fa-comments"></i> Group Chat</a></li>
+                <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="study-planner-main">
+        <section class="study-planner-section" data-aos="fade-up">
+            <div class="study-planner-header">
+                <h2>Study Planner</h2>
+                <button class="btn primary" id="add-task-btn">
+                    <i class="fas fa-plus"></i> Add Task
+                </button>
+            </div>
+
+            <div class="study-planner-grid">
+                <!-- Timer Section -->
+                <div class="study-timer-card" data-aos="zoom-in">
+                    <h3>Study Timer</h3>
+                    <div class="timer-display">
+                        <span id="timer-minutes">25</span>:<span id="timer-seconds">00</span>
+                    </div>
+                    <div class="timer-controls">
+                        <button class="timer-btn" id="timer-start">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <button class="timer-btn" id="timer-pause" style="display: none;">
+                            <i class="fas fa-pause"></i>
+                        </button>
+                        <button class="timer-btn" id="timer-reset">
+                            <i class="fas fa-redo"></i>
+                        </button>
+                        <button class="timer-btn" id="timer-music">
+                            <i class="fas fa-music"></i>
+                        </button>
+                    </div>
+                    <div class="timer-presets">
+                        <button class="timer-preset" data-minutes="25">25m</button>
+                        <button class="timer-preset" data-minutes="45">45m</button>
+                        <button class="timer-preset" data-minutes="60">60m</button>
+                    </div>
+                    <!-- Music Controls -->
+                    <div class="music-controls" style="display: none;">
+                        <audio id="study-music" preload="auto">
+                            <source src="./assets/study-music.mp3" type="audio/mpeg">
+                        </audio>
+                        <div class="music-info">
+                            <i class="fas fa-volume-up"></i>
+                            <span id="music-status">Study Music Ready</span>
+                        </div>
+                        <div class="volume-control">
+                            <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tasks Section -->
+                <div class="study-tasks-card" data-aos="zoom-in" data-aos-delay="50">
+                    <h3>Today's Tasks</h3>
+                    <div class="tasks-container" id="tasks-container">
+                        <!-- Tasks will be added here dynamically -->
+                    </div>
+                </div>
+
+                <!-- Progress Section -->
+                <div class="study-progress-card" data-aos="zoom-in" data-aos-delay="100">
+                    <h3>Study Progress</h3>
+                    <div class="progress-stats">
+                        <div class="progress-stat">
+                            <i class="fas fa-check-circle"></i>
+                            <span id="completed-tasks">0</span>
+                            <p>Completed</p>
+                        </div>
+                        <div class="progress-stat">
+                            <i class="fas fa-clock"></i>
+                            <span id="total-time">0</span>
+                            <p>Hours Studied</p>
+                        </div>
+                    </div>
+                    <div class="progress-chart">
+                        <canvas id="progress-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Add Task Modal -->
+    <div id="task-modal" class="task-modal">
+        <div class="task-modal-content">
+            <span class="task-modal-close">&times;</span>
+            <h3>Add Study Task</h3>
+            <form id="task-form">
+                <div class="form-group">
+                    <label for="task-title">Task Title</label>
+                    <input type="text" id="task-title" required placeholder="e.g., Review Calculus Chapter 3">
+                </div>
+                <div class="form-group">
+                    <label for="task-subject">Subject</label>
+                    <select id="task-subject" required>
+                        <option value="">Select Subject</option>
+                        <option value="Mathematics">Mathematics</option>
+                        <option value="Physics">Physics</option>
+                        <option value="Chemistry">Chemistry</option>
+                        <option value="Biology">Biology</option>
+                        <option value="Computer Science">Computer Science</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="task-deadline">Deadline</label>
+                    <input type="datetime-local" id="task-deadline" required>
+                </div>
+                <div class="form-group">
+                    <label for="task-priority">Priority</label>
+                    <select id="task-priority" required>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="task-notes">Notes (Optional)</label>
+                    <textarea id="task-notes" placeholder="Add any additional notes..."></textarea>
+                </div>
+                <button type="submit" class="btn primary">Add Task</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Learn Tips Modal -->
+    <div id="learn-modal" class="learn-modal">
+        <div class="learn-modal-content">
+            <span class="learn-modal-close">&times;</span>
+            <div id="learn-content">
+                <!-- Content will be loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+
+        // Timer functionality
+        let timerInterval;
+        let timeLeft = 25 * 60; // 25 minutes in seconds
+        let isTimerRunning = false;
+
+        const timerMinutes = document.getElementById('timer-minutes');
+        const timerSeconds = document.getElementById('timer-seconds');
+        const timerStart = document.getElementById('timer-start');
+        const timerPause = document.getElementById('timer-pause');
+        const timerReset = document.getElementById('timer-reset');
+        const timerPresets = document.querySelectorAll('.timer-preset');
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerMinutes.textContent = minutes.toString().padStart(2, '0');
+            timerSeconds.textContent = seconds.toString().padStart(2, '0');
+        }
+
+        function startTimer() {
+            if (!isTimerRunning) {
+                isTimerRunning = true;
+                timerStart.style.display = 'none';
+                timerPause.style.display = 'inline-block';
+                timerInterval = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        updateTimerDisplay();
+                    } else {
+                        clearInterval(timerInterval);
+                        isTimerRunning = false;
+                        timerStart.style.display = 'inline-block';
+                        timerPause.style.display = 'none';
+                        // Play notification sound
+                        new Audio('https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3').play();
+                    }
+                }, 1000);
+            }
+        }
+
+        function pauseTimer() {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            timerStart.style.display = 'inline-block';
+            timerPause.style.display = 'none';
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            timeLeft = 25 * 60;
+            updateTimerDisplay();
+            timerStart.style.display = 'inline-block';
+            timerPause.style.display = 'none';
+        }
+
+        timerStart.addEventListener('click', startTimer);
+        timerPause.addEventListener('click', pauseTimer);
+        timerReset.addEventListener('click', resetTimer);
+
+        timerPresets.forEach(preset => {
+            preset.addEventListener('click', () => {
+                const minutes = parseInt(preset.dataset.minutes);
+                timeLeft = minutes * 60;
+                updateTimerDisplay();
+                if (isTimerRunning) {
+                    pauseTimer();
+                }
+            });
+        });
+
+        // Task Modal functionality
+        const taskModal = document.getElementById('task-modal');
+        const addTaskBtn = document.getElementById('add-task-btn');
+        const taskModalClose = document.querySelector('.task-modal-close');
+        const taskForm = document.getElementById('task-form');
+        const tasksContainer = document.getElementById('tasks-container');
+
+        addTaskBtn.addEventListener('click', () => {
+            taskModal.style.display = 'flex';
+        });
+
+        taskModalClose.addEventListener('click', () => {
+            taskModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === taskModal) {
+                taskModal.style.display = 'none';
+            }
+        });
+
+        // Task management
+        function loadTasks() {
+            const tasks = JSON.parse(localStorage.getItem('studyTasks') || '[]');
+            tasksContainer.innerHTML = '';
+            
+            if (tasks.length === 0) {
+                tasksContainer.innerHTML = '<div class="no-tasks">No tasks added yet. Click "Add Task" to get started!</div>';
+                return;
+            }
+
+            tasks.sort((a, b) => new Date(a.deadline) - new Date(b.deadline))
+                .forEach((task, index) => {
+                    const taskElement = createTaskElement(task, index);
+                    tasksContainer.appendChild(taskElement);
+                });
+
+            updateProgress();
+        }
+
+        function createTaskElement(task, index) {
+            const div = document.createElement('div');
+            div.className = `task-item ${task.completed ? 'completed' : ''}`;
+            div.innerHTML = `
+                <div class="task-content">
+                    <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''}>
+                    <div class="task-info">
+                        <h4>${task.title}</h4>
+                        <div class="task-meta">
+                            <span class="task-subject">${task.subject}</span>
+                            <span class="task-deadline">${formatDateTime(task.deadline)}</span>
+                            <span class="task-priority ${task.priority}">${task.priority}</span>
+                        </div>
+                        ${task.notes ? `<p class="task-notes">${task.notes}</p>` : ''}
+                    </div>
+                </div>
+                <button class="task-delete" data-index="${index}">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+
+            const checkbox = div.querySelector('.task-checkbox');
+            checkbox.addEventListener('change', () => toggleTaskComplete(index));
+
+            const deleteBtn = div.querySelector('.task-delete');
+            deleteBtn.addEventListener('click', () => deleteTask(index));
+
+            return div;
+        }
+
+        function toggleTaskComplete(index) {
+            const tasks = JSON.parse(localStorage.getItem('studyTasks') || '[]');
+            tasks[index].completed = !tasks[index].completed;
+            localStorage.setItem('studyTasks', JSON.stringify(tasks));
+            loadTasks();
+        }
+
+        function deleteTask(index) {
+            const tasks = JSON.parse(localStorage.getItem('studyTasks') || '[]');
+            tasks.splice(index, 1);
+            localStorage.setItem('studyTasks', JSON.stringify(tasks));
+            loadTasks();
+        }
+
+        function formatDateTime(dateTimeStr) {
+            const date = new Date(dateTimeStr);
+            return date.toLocaleString(undefined, {
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        taskForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const task = {
+                title: document.getElementById('task-title').value,
+                subject: document.getElementById('task-subject').value,
+                deadline: document.getElementById('task-deadline').value,
+                priority: document.getElementById('task-priority').value,
+                notes: document.getElementById('task-notes').value,
+                completed: false,
+                createdAt: new Date().toISOString()
+            };
+
+            const tasks = JSON.parse(localStorage.getItem('studyTasks') || '[]');
+            tasks.push(task);
+            localStorage.setItem('studyTasks', JSON.stringify(tasks));
+
+            taskForm.reset();
+            taskModal.style.display = 'none';
+            loadTasks();
+        });
+
+        // Progress tracking
+        function updateProgress() {
+            const tasks = JSON.parse(localStorage.getItem('studyTasks') || '[]');
+            const completedTasks = tasks.filter(task => task.completed).length;
+            const totalTime = Math.floor(tasks.reduce((acc, task) => {
+                if (task.completed) {
+                    const created = new Date(task.createdAt);
+                    const completed = new Date(task.completedAt || new Date());
+                    return acc + (completed - created) / (1000 * 60 * 60); // Convert to hours
+                }
+                return acc;
+            }, 0));
+
+            document.getElementById('completed-tasks').textContent = completedTasks;
+            document.getElementById('total-time').textContent = totalTime;
+
+            // Update progress chart
+            updateProgressChart(tasks);
+        }
+
+        function updateProgressChart(tasks) {
+            const ctx = document.getElementById('progress-chart').getContext('2d');
+            
+            // Group tasks by subject
+            const subjectData = tasks.reduce((acc, task) => {
+                if (!acc[task.subject]) {
+                    acc[task.subject] = { total: 0, completed: 0 };
+                }
+                acc[task.subject].total++;
+                if (task.completed) {
+                    acc[task.subject].completed++;
+                }
+                return acc;
+            }, {});
+
+            const subjects = Object.keys(subjectData);
+            const completedData = subjects.map(subject => subjectData[subject].completed);
+            const totalData = subjects.map(subject => subjectData[subject].total);
+
+            if (window.progressChart) {
+                window.progressChart.destroy();
+            }
+
+            window.progressChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: subjects,
+                    datasets: [{
+                        label: 'Completed Tasks',
+                        data: completedData,
+                        backgroundColor: '#59c6cb',
+                        borderColor: '#59c6cb',
+                        borderWidth: 1
+                    }, {
+                        label: 'Total Tasks',
+                        data: totalData,
+                        backgroundColor: '#f6f8fc',
+                        borderColor: '#59c6cb',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update music control functionality
+        const timerMusicBtn = document.getElementById('timer-music');
+        const musicControls = document.querySelector('.music-controls');
+        const studyMusic = document.getElementById('study-music');
+        const volumeSlider = document.getElementById('volume-slider');
+        const musicStatus = document.getElementById('music-status');
+        let isMusicPlaying = false;
+
+        // Add event listeners for audio
+        studyMusic.addEventListener('canplaythrough', () => {
+            console.log('Audio can play through');
+            musicStatus.textContent = 'Study Music Ready';
+        });
+
+        studyMusic.addEventListener('error', (e) => {
+            console.error('Audio error:', e);
+            musicStatus.textContent = 'Error loading music';
+        });
+
+        timerMusicBtn.addEventListener('click', () => {
+            if (!isMusicPlaying) {
+                const playPromise = studyMusic.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        musicControls.style.display = 'block';
+                        timerMusicBtn.style.background = '#59c6cb';
+                        timerMusicBtn.style.color = '#fff';
+                        isMusicPlaying = true;
+                        musicStatus.textContent = 'Study Music Playing';
+                    }).catch(error => {
+                        console.error('Playback failed:', error);
+                        musicStatus.textContent = 'Error playing music';
+                    });
+                }
+            } else {
+                studyMusic.pause();
+                musicControls.style.display = 'none';
+                timerMusicBtn.style.background = '#fff';
+                timerMusicBtn.style.color = '#59c6cb';
+                isMusicPlaying = false;
+                musicStatus.textContent = 'Study Music Ready';
+            }
+        });
+
+        volumeSlider.addEventListener('input', (e) => {
+            studyMusic.volume = e.target.value;
+        });
+
+        // Update timer functions to handle music
+        const originalStartTimer = startTimer;
+        startTimer = function() {
+            originalStartTimer();
+            if (isMusicPlaying) {
+                studyMusic.play();
+            }
+        };
+
+        const originalPauseTimer = pauseTimer;
+        pauseTimer = function() {
+            originalPauseTimer();
+            if (isMusicPlaying) {
+                studyMusic.pause();
+            }
+        };
+
+        const originalResetTimer = resetTimer;
+        resetTimer = function() {
+            originalResetTimer();
+            if (isMusicPlaying) {
+                studyMusic.pause();
+                studyMusic.currentTime = 0;
+            }
+        };
+
+        // Initial load
+        loadTasks();
+    </script>
+
+    <style>
+    /* Learn Main Cards Styles */
+    .learn-main-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        margin-top: 1.5rem;
+    }
+    .learn-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 2px 8px rgba(89,198,203,0.08);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        cursor: pointer;
+        transition: box-shadow 0.2s;
+        position: relative;
+    }
+    .learn-card:hover {
+        box-shadow: 0 6px 24px rgba(89,198,203,0.18);
+    }
+    .learn-card-img {
+        width: 100%;
+        height: 140px;
+        object-fit: cover;
+        background: #f6f8fc;
+    }
+    .learn-card-content {
+        padding: 1.2rem 1.5rem 1.5rem 1.5rem;
+    }
+    .learn-card-progress {
+        font-size: 1rem;
+        color: #7a8fa6;
+        margin-bottom: 0.3rem;
+    }
+    .learn-card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #173D7A;
+        margin-bottom: 0.7rem;
+    }
+    .learn-card-bar {
+        width: 100%;
+        height: 10px;
+        background: #e6f4f5;
+        border-radius: 6px;
+        overflow: hidden;
+    }
+    .learn-card-bar-fill {
+        height: 100%;
+        background: #59c6cb;
+        border-radius: 6px;
+        transition: width 0.4s;
+    }
+    @media (max-width: 768px) {
+        .learn-main-cards {
+            gap: 1.2rem;
+        }
+        .learn-card-img {
+            height: 100px;
+        }
+        .learn-card-content {
+            padding: 1rem;
+        }
+        .learn-card-title {
+            font-size: 1.1rem;
+        }
+    }
+    </style>
+</body>
+</html> 

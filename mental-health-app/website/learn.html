@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn - StudentWell</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+</head>
+<body>
+    <header>
+        <button class="profile-top-btn" onclick="window.location.href='profile.html'">
+            <img class="profile-top-avatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="User Avatar">
+            <span class="profile-top-name">John Doe</span>
+        </button>
+        <div class="logo" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <img src="assets/images/Screenshot 2025-05-16 120317.png" alt="StudentWell Logo">
+        </div>
+        <p class="tagline">Supporting Student Mental Health Together</p>
+        <nav>
+            <ul>
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="group-chat.html"><i class="fas fa-comments"></i> Group Chat</a></li>
+                <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main class="learn-main">
+        <section class="learn-section" data-aos="fade-up">
+            <h2>Learn</h2>
+            <div class="learn-main-cards">
+                <!-- Understanding Lessons Card -->
+                <div class="learn-card" id="understanding-lessons-card">
+                    <img src="assets/images/understanding-lessons.png" alt="Understanding Lessons" class="learn-card-img">
+                    <div class="learn-card-content">
+                        <div class="learn-card-title">Understanding Lessons</div>
+                    </div>
+                </div>
+                <!-- Short Term Lessons Card -->
+                <div class="learn-card" id="short-term-lessons-card">
+                    <img src="assets/images/short-term.png" alt="Short Term Lessons" class="learn-card-img">
+                    <div class="learn-card-content">
+                        <div class="learn-card-title">Short Term Lessons</div>
+                    </div>
+                </div>
+                <!-- Long Term Lessons Card -->
+                <div class="learn-card" id="long-term-lessons-card">
+                    <img src="assets/images/long-term.png" alt="Long Term Lessons" class="learn-card-img">
+                    <div class="learn-card-content">
+                        <div class="learn-card-title">Long Term Lessons</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 1000, once: true });
+        // Future: Add click handlers for cards to open sub-lessons
+    </script>
+    <style>
+    .learn-main {
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 2rem 1rem 3rem 1rem;
+    }
+    .learn-section h2 {
+        text-align: center;
+        color: #173D7A;
+        margin-bottom: 2rem;
+    }
+    .learn-main-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        margin-top: 1.5rem;
+    }
+    .learn-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 2px 8px rgba(89,198,203,0.08);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        cursor: pointer;
+        transition: box-shadow 0.2s;
+        position: relative;
+    }
+    .learn-card:hover {
+        box-shadow: 0 6px 24px rgba(89,198,203,0.18);
+    }
+    .learn-card-img {
+        width: 100%;
+        height: 140px;
+        object-fit: cover;
+        background: #f6f8fc;
+    }
+    .learn-card-content {
+        padding: 1.2rem 1.5rem 1.5rem 1.5rem;
+    }
+    .learn-card-progress {
+        font-size: 1rem;
+        color: #7a8fa6;
+        margin-bottom: 0.3rem;
+    }
+    .learn-card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #173D7A;
+        margin-bottom: 0.7rem;
+    }
+    .learn-card-bar {
+        width: 100%;
+        height: 10px;
+        background: #e6f4f5;
+        border-radius: 6px;
+        overflow: hidden;
+    }
+    .learn-card-bar-fill {
+        height: 100%;
+        background: #59c6cb;
+        border-radius: 6px;
+        transition: width 0.4s;
+    }
+    @media (max-width: 768px) {
+        .learn-main-cards {
+            gap: 1.2rem;
+        }
+        .learn-card-img {
+            height: 100px;
+        }
+        .learn-card-content {
+            padding: 1rem;
+        }
+        .learn-card-title {
+            font-size: 1.1rem;
+        }
+    }
+    </style>
+</body>
+</html> 

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breathe - StudentWell</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body.breathe-bg {
+            background: linear-gradient(180deg, #b2eaf7 0%, #e0f7fa 100%);
+            min-height: 100vh;
+        }
+        .breathe-main {
+            max-width: 400px;
+            margin: 0.5rem auto;
+            background: rgba(255,255,255,0.85);
+            border-radius: 24px;
+            box-shadow: 0 4px 24px rgba(89,198,203,0.10);
+            padding: 2rem 1.5rem 2.5rem 1.5rem;
+            text-align: center;
+        }
+        .breathe-illustration {
+            width: 220px;
+            max-width: 90vw;
+            margin: 1rem auto 1.5rem auto;
+            display: block;
+        }
+        .breathe-desc {
+            color: #173D7A;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+        .breathe-cues {
+            display: flex;
+            justify-content: center;
+            gap: 2.5rem;
+            margin-bottom: 1.2rem;
+        }
+        .breathe-cue {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 1.1rem;
+            color: #173D7A;
+        }
+        .breathe-cue img {
+            width: 60px;
+            margin-bottom: 0.3rem;
+        }
+        .breathe-timer-select {
+            font-size: 1.1rem;
+            padding: 0.7rem 1.2rem;
+            border-radius: 18px;
+            border: 1px solid #59c6cb;
+            margin-bottom: 1.5rem;
+            background: #fff;
+            color: #173D7A;
+        }
+        .breathe-start-btn {
+            background: #59c6cb;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 1rem 2.5rem;
+            margin-top: 1rem;
+            box-shadow: 0 2px 12px rgba(89,198,203,0.15);
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+        .breathe-start-btn:hover {
+            background: #3a8e91;
+        }
+        .breathe-session {
+            margin-top: 2rem;
+            font-size: 2rem;
+            color: #173D7A;
+            font-weight: 600;
+        }
+        .breathe-music {
+            margin-top: 1.5rem;
+        }
+        @media (max-width: 600px) {
+            .breathe-main {
+                max-width: 98vw;
+                padding: 1.2rem 0.5rem 1.5rem 0.5rem;
+            }
+            .breathe-illustration {
+                width: 80px;
+            }
+            .breathe-cue img {
+                width: 40px;
+            }
+        }
+    </style>
+</head>
+<body class="breathe-bg">
+    <header style="background: #59c6cb; height: 60px; display: flex; align-items: center; justify-content: center; position: relative; border-radius: 0 0 24px 24px;">
+        <a href="index.html" class="btn secondary" style="position:absolute;left:2rem;top:50%;transform:translateY(-50%);">&larr; Home</a>
+        <h1 style="text-align:center;margin:0;font-size:2rem;color:#fff;">Breathe</h1>
+    </header>
+    <main>
+        <div class="breathe-main">
+            <img src="assets/images/breathe-illustration.png" alt="Breathe Illustration" class="breathe-illustration">
+            <div class="breathe-desc">
+                The Breathe tool is the perfect way to practice deep breathing daily and calm you down during times of stress.
+            </div>
+            <div class="breathe-cues">
+                <div class="breathe-cue">
+                    <img src="https://cdn-icons-png.flaticon.com/512/616/616494.png" alt="Inhale">
+                    Inhale
+                </div>
+                <div class="breathe-cue">
+                    <img src="https://cdn-icons-png.flaticon.com/512/616/616494.png" style="transform: scaleX(-1);" alt="Exhale">
+                    Exhale
+                </div>
+            </div>
+            <select id="breathe-timer" class="breathe-timer-select">
+                <option value="1">1:00</option>
+                <option value="2">2:00</option>
+                <option value="3">3:00</option>
+                <option value="5">5:00</option>
+                <option value="custom">Custom</option>
+            </select>
+            <input id="custom-timer" type="number" min="1" max="60" placeholder="Minutes" style="display:none;margin-bottom:1.5rem;padding:0.7rem 1.2rem;border-radius:18px;border:1px solid #59c6cb;color:#173D7A;" />
+            <br>
+            <button class="breathe-start-btn" id="breathe-start">Let's start</button>
+            <button class="breathe-start-btn" id="breathe-stop" style="display:none;background:#FF5A5F;">Stop</button>
+            <div class="breathe-session" id="breathe-session" style="display:none;"></div>
+            <div class="breathe-music">
+                <button id="music-toggle" class="btn secondary" style="margin-bottom:0.7rem;">Play Calm Music</button>
+                <audio id="breathe-audio" loop style="display:none;">
+                    <source src="assets/audio/calm-music.mp3" type="audio/mp3">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+        </div>
+    </main>
+    <script>
+        const startBtn = document.getElementById('breathe-start');
+        const sessionDiv = document.getElementById('breathe-session');
+        const timerSelect = document.getElementById('breathe-timer');
+        const audio = document.getElementById('breathe-audio');
+        const stopBtn = document.getElementById('breathe-stop');
+        const musicToggle = document.getElementById('music-toggle');
+        const customTimer = document.getElementById('custom-timer');
+        let interval, totalSeconds, remainingSeconds, phase, phaseSeconds;
+        const phases = [
+            { text: 'Inhale', duration: 4 },
+            { text: 'Hold', duration: 4 },
+            { text: 'Exhale', duration: 4 },
+            { text: 'Hold', duration: 4 }
+        ];
+        timerSelect.onchange = () => {
+            if (timerSelect.value === 'custom') {
+                customTimer.style.display = 'inline-block';
+            } else {
+                customTimer.style.display = 'none';
+            }
+        };
+        startBtn.onclick = () => {
+            let minutes;
+            if (timerSelect.value === 'custom') {
+                minutes = parseInt(customTimer.value);
+                if (isNaN(minutes) || minutes < 1) {
+                    alert('Please enter a valid custom time (at least 1 minute).');
+                    return;
+                }
+            } else {
+                minutes = parseInt(timerSelect.value);
+            }
+            totalSeconds = minutes * 60;
+            remainingSeconds = totalSeconds;
+            phase = 0;
+            phaseSeconds = phases[phase].duration;
+            sessionDiv.style.display = 'block';
+            startBtn.disabled = true;
+            timerSelect.disabled = true;
+            customTimer.disabled = true;
+            stopBtn.style.display = 'inline-block';
+            audio.play();
+            runSession();
+        };
+        stopBtn.onclick = () => {
+            clearTimeout(interval);
+            sessionDiv.textContent = '';
+            sessionDiv.style.display = 'none';
+            startBtn.disabled = false;
+            timerSelect.disabled = false;
+            customTimer.disabled = false;
+            stopBtn.style.display = 'none';
+            audio.pause();
+            audio.currentTime = 0;
+        };
+        musicToggle.onclick = () => {
+            if (audio.paused) {
+                audio.play();
+                musicToggle.textContent = 'Pause Music';
+            } else {
+                audio.pause();
+                musicToggle.textContent = 'Play Calm Music';
+            }
+        };
+        audio.onplay = () => { musicToggle.textContent = 'Pause Music'; };
+        audio.onpause = () => { musicToggle.textContent = 'Play Calm Music'; };
+        function runSession() {
+            if (remainingSeconds <= 0) {
+                sessionDiv.textContent = 'Session Complete!';
+                startBtn.disabled = false;
+                timerSelect.disabled = false;
+                customTimer.disabled = false;
+                stopBtn.style.display = 'none';
+                audio.pause();
+                audio.currentTime = 0;
+                return;
+            }
+            sessionDiv.textContent = `${phases[phase].text} (${phaseSeconds}s)\nTime left: ${formatTime(remainingSeconds)}`;
+            interval = setTimeout(() => {
+                phaseSeconds--;
+                remainingSeconds--;
+                if (phaseSeconds <= 0) {
+                    phase = (phase + 1) % phases.length;
+                    phaseSeconds = phases[phase].duration;
+                }
+                runSession();
+            }, 1000);
+        }
+        function formatTime(sec) {
+            const m = Math.floor(sec / 60);
+            const s = sec % 60;
+            return `${m}:${s.toString().padStart(2, '0')}`;
+        }
+    </script>
+</body>
+</html>
