@@ -7,6 +7,120 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .online-users {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(89,198,203,0.08);
+        }
+        .online-users h3 {
+            color: #173D7A;
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+        .user-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .user-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #f6f8fc;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        .user-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ccc;
+        }
+        .user-status.online {
+            background: #4CAF50;
+        }
+        .user-status.offline {
+            background: #ccc;
+        }
+        .message-status {
+            font-size: 0.8rem;
+            color: #888;
+            margin-left: 0.5rem;
+        }
+        .message-status i {
+            font-size: 0.9rem;
+        }
+        .message-status.read {
+            color: #4CAF50;
+        }
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 0.8rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        .loading-messages {
+            text-align: center;
+            padding: 1rem;
+            color: #666;
+            display: none;
+        }
+        .load-more {
+            text-align: center;
+            margin: 1rem 0;
+        }
+        .load-more button {
+            background: none;
+            border: none;
+            color: #59c6cb;
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: background 0.2s;
+        }
+        .load-more button:hover {
+            background: #f6f8fc;
+        }
+        .message-time {
+            font-size: 0.75rem;
+            color: #888;
+            margin-top: 0.2rem;
+        }
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #666;
+            font-style: italic;
+            font-size: 0.9rem;
+            min-height: 1.5em;
+            padding: 0.2rem 0.5rem;
+        }
+        .typing-dots {
+            display: flex;
+            gap: 0.2rem;
+        }
+        .typing-dots span {
+            width: 4px;
+            height: 4px;
+            background: #666;
+            border-radius: 50%;
+            animation: typing 1s infinite;
+        }
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -15,8 +129,19 @@
     </header>
     <main>
         <section class="chat-section whatsapp-chat">
+            <div class="online-users">
+                <h3>Online Users</h3>
+                <div class="user-list" id="user-list"></div>
+            </div>
+            <div class="error-message" id="error-message"></div>
+            <div class="loading-messages" id="loading-messages">
+                <i class="fas fa-spinner fa-spin"></i> Loading messages...
+            </div>
             <div class="chat-window" id="chat-window"></div>
-            <div id="typing-indicator" style="min-height:1.5em;color:#59c6cb;font-style:italic;"></div>
+            <div class="load-more" id="load-more" style="display:none;">
+                <button onclick="loadMoreMessages()">Load More Messages</button>
+            </div>
+            <div class="typing-indicator" id="typing-indicator"></div>
             <form id="chat-form" class="chat-form whatsapp-input-bar">
                 <input id="chat-input" type="text" placeholder="Type your message..." autocomplete="off" required />
                 <button type="submit" class="btn primary"><i class="fas fa-paper-plane"></i></button>
@@ -25,36 +150,208 @@
     </main>
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
     <script>
-        // Remove login requirement for group chat
-        // const token = localStorage.getItem('token');
-        // if (!token) {
-        //     window.location.href = 'login.html';
-        // }
+        // Environment configuration
+        const isProduction = window.location.hostname !== 'localhost';
+        const API_URL = isProduction 
+            ? window.location.origin 
+            : 'http://localhost:3001';
+        
         const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = 'login.html';
+        }
+        
         const username = localStorage.getItem('username') || 'Anonymous';
         const avatar = localStorage.getItem('avatar') || '';
+        let currentPage = 1;
+        let isLoading = false;
+        let hasMoreMessages = true;
 
         const chatWindow = document.getElementById('chat-window');
         const chatForm = document.getElementById('chat-form');
         const chatInput = document.getElementById('chat-input');
         const typingIndicator = document.getElementById('typing-indicator');
+        const errorMessage = document.getElementById('error-message');
+        const loadingMessages = document.getElementById('loading-messages');
+        const loadMoreBtn = document.getElementById('load-more');
+        const userList = document.getElementById('user-list');
 
-        // Fetch chat history
-        fetch('http://localhost:3001/api/messages', {
-            headers: { 'Authorization': 'Bearer ' + token }
-        })
-        .then(res => res.json())
-        .then(messages => {
-            messages.forEach(msg => addMessage(msg));
+        // Format timestamp
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diff = now - date;
+            
+            if (diff < 24 * 60 * 60 * 1000) {
+                return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            } else if (diff < 7 * 24 * 60 * 60 * 1000) {
+                return date.toLocaleDateString([], { weekday: 'short' });
+            } else {
+                return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+            }
+        }
+
+        // Show error message
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 5000);
+        }
+
+        // Update online users list
+        function updateUserList(users) {
+            userList.innerHTML = users.map(user => `
+                <div class="user-item">
+                    <div class="user-status ${user.status}"></div>
+                    <img src="${user.avatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.username)}" 
+                         alt="${user.username}" class="bubble-avatar" style="width:24px;height:24px;">
+                    <span>${user.username}</span>
+                </div>
+            `).join('');
+        }
+
+        // Load messages with pagination
+        async function loadMessages(page = 1) {
+            if (isLoading || !hasMoreMessages) return;
+            
+            isLoading = true;
+            loadingMessages.style.display = 'block';
+            
+            try {
+                const res = await fetch(`${API_URL}/api/messages?page=${page}&limit=50`, {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                const data = await res.json();
+                
+                if (res.ok) {
+                    if (page === 1) {
+                        chatWindow.innerHTML = '';
+                    }
+                    
+                    data.messages.forEach(msg => addMessage(msg));
+                    hasMoreMessages = data.pagination.currentPage < data.pagination.totalPages;
+                    loadMoreBtn.style.display = hasMoreMessages ? 'block' : 'none';
+                    currentPage = page;
+                    
+                    if (page === 1) {
+                        chatWindow.scrollTop = chatWindow.scrollHeight;
+                    }
+                } else {
+                    showError(data.message || 'Failed to load messages');
+                }
+            } catch (err) {
+                showError('Network error while loading messages');
+            } finally {
+                isLoading = false;
+                loadingMessages.style.display = 'none';
+            }
+        }
+
+        // Load more messages
+        function loadMoreMessages() {
+            loadMessages(currentPage + 1);
+        }
+
+        // Add message to chat window
+        function addMessage(msg) {
+            const isSelf = msg.username === username;
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'chat-message-bubble ' + (isSelf ? 'self' : 'other');
+            msgDiv.dataset.messageId = msg.id;
+            
+            const readStatus = isSelf ? `
+                <div class="message-status ${msg.readBy?.length > 1 ? 'read' : ''}">
+                    <i class="fas fa-check-double"></i>
+                </div>
+            ` : '';
+            
+            msgDiv.innerHTML = `
+                <div class="bubble-meta">
+                    <img src="${msg.avatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(msg.username)}" 
+                         alt="avatar" class="bubble-avatar">
+                    <span class="bubble-username">${msg.username}</span>
+                </div>
+                <div class="bubble-text">${msg.text}</div>
+                <div class="bubble-time">
+                    ${formatTime(msg.createdAt)}
+                    ${readStatus}
+                </div>
+            `;
+            
+            // Remove existing message if updating
+            const existingMsg = document.querySelector(`[data-message-id="${msg.id}"]`);
+            if (existingMsg) {
+                existingMsg.remove();
+            }
+            
+            chatWindow.appendChild(msgDiv);
+            
+            // Mark as read if not self
+            if (!isSelf) {
+                socket.emit('message read', msg.id);
+            }
+        }
+
+        // Connect to Socket.io
+        const socket = io(API_URL, {
+            auth: { token },
+            reconnection: true,
+            reconnectionAttempts: 5,
+            reconnectionDelay: 1000,
+            withCredentials: true
+        });
+
+        // Socket event handlers
+        socket.on('connect_error', (err) => {
+            showError('Connection error: ' + err.message);
+        });
+
+        socket.on('error', (err) => {
+            showError(err.message);
+        });
+
+        socket.on('user status', (data) => {
+            fetch(`${API_URL}/api/online-users`, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            })
+            .then(res => res.json())
+            .then(users => updateUserList(users))
+            .catch(() => showError('Failed to update user list'));
+        });
+
+        socket.on('typing', ({ username: typingUser, isTyping }) => {
+            if (isTyping && typingUser !== username) {
+                typingIndicator.innerHTML = `
+                    <span>${typingUser} is typing</span>
+                    <div class="typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                `;
+            } else {
+                typingIndicator.innerHTML = '';
+            }
+        });
+
+        socket.on('chat message', function(msg) {
+            addMessage(msg);
             chatWindow.scrollTop = chatWindow.scrollHeight;
         });
 
-        // Connect to Socket.io with JWT
-        const socket = io('http://localhost:3001', {
-            auth: { token }
+        socket.on('message read update', function(data) {
+            const msgDiv = document.querySelector(`[data-message-id="${data.messageId}"]`);
+            if (msgDiv) {
+                const statusDiv = msgDiv.querySelector('.message-status');
+                if (statusDiv) {
+                    statusDiv.classList.add('read');
+                }
+            }
         });
 
-        // Typing indicator
+        // Typing indicator with debounce
         let typingTimeout;
         chatInput.addEventListener('input', () => {
             socket.emit('typing', chatInput.value.length > 0);
@@ -64,21 +361,7 @@
             }, 1000);
         });
 
-        socket.on('typing', ({ username: typingUser, isTyping }) => {
-            if (isTyping && typingUser !== username) {
-                typingIndicator.textContent = typingUser + ' is typing...';
-            } else {
-                typingIndicator.textContent = '';
-            }
-        });
-
-        // Receive chat messages
-        socket.on('chat message', function(msg) {
-            addMessage(msg);
-            chatWindow.scrollTop = chatWindow.scrollHeight;
-        });
-
-        // Send chat messages
+        // Send message
         chatForm.addEventListener('submit', function(e) {
             e.preventDefault();
             if (chatInput.value.trim() !== '') {
@@ -88,21 +371,24 @@
             }
         });
 
-        // Add message to chat window (WhatsApp style)
-        function addMessage(msg) {
-            const isSelf = msg.username === username;
-            const msgDiv = document.createElement('div');
-            msgDiv.className = 'chat-message-bubble ' + (isSelf ? 'self' : 'other');
-            msgDiv.innerHTML = `
-                <div class="bubble-meta">
-                    <img src="${msg.avatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(msg.username || 'U')}" alt="avatar" class="bubble-avatar">
-                    <span class="bubble-username">${msg.username || 'Unknown'}</span>
-                </div>
-                <div class="bubble-text">${msg.text}</div>
-                <div class="bubble-time">${msg.createdAt ? new Date(msg.createdAt).toLocaleTimeString() : ''}</div>
-            `;
-            chatWindow.appendChild(msgDiv);
-        }
+        // Initial load
+        loadMessages();
+        
+        // Load online users
+        fetch(`${API_URL}/api/online-users`, {
+            headers: { 'Authorization': 'Bearer ' + token }
+        })
+        .then(res => res.json())
+        .then(users => updateUserList(users))
+        .catch(() => showError('Failed to load online users'));
+
+        // Auto-scroll to bottom on new messages
+        const observer = new MutationObserver(() => {
+            if (chatWindow.scrollHeight - chatWindow.scrollTop < chatWindow.clientHeight + 100) {
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+            }
+        });
+        observer.observe(chatWindow, { childList: true });
     </script>
 </body>
 </html> 
