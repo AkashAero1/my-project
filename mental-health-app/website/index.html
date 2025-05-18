@@ -11,10 +11,10 @@
 </head>
 <body>
     <header>
-        <button class="profile-top-btn" onclick="window.location.href='profile.html'">
+        <a class="profile-top-btn" href="profile.html">
             <img class="profile-top-avatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="User Avatar">
-            <span class="profile-top-name">John Doe</span>
-        </button>
+            <span class="profile-top-name">Profile</span>
+        </a>
         <div class="logo" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
             <img src="assets/images/Screenshot 2025-05-16 120317.png" alt="StudentWell Logo">
         </div>
@@ -24,7 +24,7 @@
                 <li><a href="#about"><i class="fas fa-info-circle"></i> About Us</a></li>
                 <li><a href="#features"><i class="fas fa-star"></i> Features</a></li>
                 <li><a href="group-chat.html"><i class="fas fa-comments"></i> Group Chat</a></li>
-                <li><a href="#community"><i class="fas fa-users"></i> Community</a></li>
+                <li><a href="#Your-Mental-Health-Matters"><i class="fas fa-users"></i> Your Mental Health Matters</a></li>
                 <li><a href="#contact"><i class="fas fa-envelope"></i> Contact</a></li>
             </ul>
         </nav>
@@ -72,12 +72,12 @@
                     <i class="fas fa-brain"></i>
                     <h3>Mental Health Resources</h3>
                     <p>Access curated content, articles, and tools for managing stress and anxiety.</p>
-                    <a href="mental-health-resources.html" class="feature-link">Learn More <i class="fas fa-arrow-right"></i></a>                </div>
+                    <a href="mental-health-resources.html" class="feature-link">Explore <i class="fas fa-arrow-right"></i></a>                </div>
                 <div class="feature-card" data-aos="zoom-in" data-aos-delay="100">
                     <i class="fas fa-comments"></i>
                     <h3>Group Chat</h3>
                     <p>Connect with peers in a safe, moderated space to share experiences and support.</p>
-                    <a href="#learn-more" class="feature-link">Learn More <i class="fas fa-arrow-right"></i></a>
+                    <a href="#learn-more" class="feature-link">Chat Now<i class="fas fa-arrow-right"></i></a>
                 </div>
                 <div class="feature-card" data-aos="zoom-in" data-aos-delay="150" id="moodtrack-card" style="cursor:pointer;">
                     <i class="fas fa-chart-line"></i>
@@ -89,7 +89,7 @@
                     <i class="fas fa-calendar-check"></i>
                     <h3>Study Planner</h3>
                     <p>Balance your academic and personal life with our smart study planning tools.</p>
-                    <a href="study-planner.html" class="feature-link">Learn More <i class="fas fa-arrow-right"></i></a>
+                    <a href="study-planner.html" class="feature-link">Explore <i class="fas fa-arrow-right"></i></a>
                 </div>
                 <div class="feature-card" data-aos="zoom-in" data-aos-delay="250">
                     <i class="fas fa-wind"></i>
@@ -130,20 +130,13 @@
                 <div class="about-text">
                     <p>At StudentWell, we understand the unique challenges students face in their academic journey. Our mission is to provide a safe, supportive space where students can find resources, connect with peers, and prioritize their mental well-being.</p>
                     <div class="stats">
-                        <div class="stat-item" data-aos="zoom-in" data-aos-delay="100">
-                            <i class="fas fa-users"></i>
-                            <h3>1000+</h3>
-                            <p>Active Users</p>
-                        </div>
+                       
                         <div class="stat-item" data-aos="zoom-in" data-aos-delay="150">
-                            <i class="fas fa-comments"></i>
-                            <h3>500+</h3>
-                            <p>Daily Conversations</p>
+                            
                         </div>
                         <div class="stat-item" data-aos="zoom-in" data-aos-delay="200">
                             <i class="fas fa-heart"></i>
-                            <h3>98%</h3>
-                            <p>User Satisfaction</p>
+                            
                         </div>
                     </div>
                 </div>
@@ -166,47 +159,7 @@
             </div>
         </section>
 
-        <section id="testimonials" data-aos="fade-up">
-            <h2>What Our Users Say</h2>
-            <div class="testimonials-slider">
-                <div class="testimonial-card" data-aos="fade-right">
-                    <div class="testimonial-content">
-                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80" alt="User 1">
-                        <p>"StudentWell has been a game-changer for my academic journey. The community support is incredible!"</p>
-                        <h4>Sarah M.</h4>
-                        <p class="user-title">Medical Student</p>
-                    </div>
-                </div>
-                <div class="testimonial-card" data-aos="fade-up">
-                    <div class="testimonial-content">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80" alt="User 2">
-                        <p>"The study planner and mood tracking features have helped me maintain a better work-life balance."</p>
-                        <h4>John D.</h4>
-                        <p class="user-title">Engineering Student</p>
-                    </div>
-                </div>
-            </div>
-        </section>
 
-        <section id="community" data-aos="fade-up">
-            <h2>Join Our Community</h2>
-            <div class="community-content">
-                <div class="community-text">
-                    <h3>Connect with Fellow Students</h3>
-                    <p>Join our supportive community where you can:</p>
-                    <ul>
-                        <li>Share your experiences</li>
-                        <li>Get advice from peers</li>
-                        <li>Participate in group discussions</li>
-                        <li>Access exclusive resources</li>
-                    </ul>
-                    <a href="#join" class="btn primary">Join Now</a>
-                </div>
-                <div class="community-image" data-aos="fade-left">
-                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Community">
-                </div>
-            </div>
-        </section>
 
         <section id="contact" data-aos="fade-up">
             <h2>Contact Us</h2>
@@ -245,17 +198,15 @@
                 <ul>
                     <li><a href="#about">About Us</a></li>
                     <li><a href="#features">Features</a></li>
-                    <li><a href="#resources">Resources</a></li>
                     <li><a href="#community">Community</a></li>
                 </ul>
             </div>
             <div class="footer-section">
                 <h3>Connect With Us</h3>
                 <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="https://x.com/" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.instagram.com/" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.linkedin.com/" target="_blank"><i class="fab fa-linkedin"></i></a>
                 </div>
             </div>
             <div class="footer-section">
@@ -1668,6 +1619,185 @@
                 `;
             };
         })();
+    </script>
+    <!-- Profile Modal -->
+    <div id="profile-modal" class="profile-modal" style="display:none;">
+      <div class="profile-modal-content">
+        <span class="profile-modal-close" id="profile-modal-close">&times;</span>
+        <div class="profile-avatar-section">
+          <img id="profile-avatar" class="profile-avatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="User Avatar">
+          <input type="file" id="avatar-upload" accept="image/*" style="display:none;">
+          <button class="btn secondary" id="change-avatar-btn">Change Avatar</button>
+        </div>
+        <div class="profile-fields">
+          <label for="profile-name">Name</label>
+          <input type="text" id="profile-name" class="profile-input" maxlength="32">
+          <label for="profile-bio">Bio</label>
+          <textarea id="profile-bio" class="profile-input" rows="3" maxlength="120" placeholder="Tell us about yourself..."></textarea>
+        </div>
+        <button class="btn primary" id="save-profile-btn">Save Changes</button>
+      </div>
+    </div>
+    <style>
+    .profile-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.25);
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+    .profile-modal-content {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 4px 24px rgba(89,198,203,0.15);
+      padding: 2.5rem 2rem 2rem 2rem;
+      max-width: 400px;
+      width: 95vw;
+      text-align: center;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .profile-modal-close {
+      position: absolute;
+      top: 1.2rem;
+      right: 1.5rem;
+      font-size: 2rem;
+      color: #59c6cb;
+      cursor: pointer;
+      font-weight: 700;
+      transition: color 0.2s;
+    }
+    .profile-modal-close:hover {
+      color: #FF5A5F;
+    }
+    .profile-avatar-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .profile-avatar {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #59c6cb;
+      margin-bottom: 0.7rem;
+    }
+    .profile-fields {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+      margin-bottom: 1.2rem;
+    }
+    .profile-input {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      border-radius: 10px;
+      border: 1.5px solid #59c6cb;
+      font-size: 1rem;
+      margin-bottom: 0.2rem;
+    }
+    </style>
+    <script>
+    // Profile Modal Logic
+    (function() {
+      const profileBtn = document.querySelector('.profile-top-btn');
+      const profileModal = document.getElementById('profile-modal');
+      const profileClose = document.getElementById('profile-modal-close');
+      const profileAvatar = document.getElementById('profile-avatar');
+      const changeAvatarBtn = document.getElementById('change-avatar-btn');
+      const avatarUpload = document.getElementById('avatar-upload');
+      const profileName = document.getElementById('profile-name');
+      const profileBio = document.getElementById('profile-bio');
+      const saveProfileBtn = document.getElementById('save-profile-btn');
+      const profileTopName = document.querySelector('.profile-top-name');
+      const profileTopAvatar = document.querySelector('.profile-top-avatar');
+
+      // Load profile from localStorage
+      function loadProfile() {
+        const data = JSON.parse(localStorage.getItem('profileData') || '{}');
+        if (data.avatar) profileAvatar.src = data.avatar;
+        if (data.name) profileName.value = data.name;
+        if (data.bio) profileBio.value = data.bio;
+        if (profileTopName && data.name) profileTopName.textContent = data.name;
+        if (profileTopAvatar && data.avatar) profileTopAvatar.src = data.avatar;
+      }
+
+      // Save profile to localStorage
+      function saveProfile() {
+        const data = {
+          avatar: profileAvatar.src,
+          name: profileName.value.trim() || 'Student',
+          bio: profileBio.value.trim()
+        };
+        localStorage.setItem('profileData', JSON.stringify(data));
+        if (profileTopName) profileTopName.textContent = data.name;
+        if (profileTopAvatar) profileTopAvatar.src = data.avatar;
+      }
+
+      // Open modal
+      if (profileBtn && profileModal) {
+        profileBtn.onclick = () => {
+          loadProfile();
+          profileModal.style.display = 'flex';
+        };
+      }
+      // Close modal
+      if (profileClose && profileModal) {
+        profileClose.onclick = () => {
+          profileModal.style.display = 'none';
+        };
+        window.addEventListener('cliyesck', function(event) {
+          if (event.target === profileModal) {
+            profileModal.style.display = 'none';
+          }
+        });
+      }
+      // Change avatar
+      if (changeAvatarBtn && avatarUpload) {
+        changeAvatarBtn.onclick = () => avatarUpload.click();
+        avatarUpload.onchange = function() {
+          const file = this.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+              profileAvatar.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+          }
+        };
+      }
+      // Save changes
+      if (saveProfileBtn) {
+        saveProfileBtn.onclick = () => {
+          saveProfile();
+          profileModal.style.display = 'none';
+        };
+      }
+      // On page load, update header if profile exists
+      loadProfile();
+    })();
+    </script>
+    <script>
+    // Profile Badge Logic for Header
+    (function() {
+        const profileTopName = document.querySelector('.profile-top-name');
+        const profileTopAvatar = document.querySelector('.profile-top-avatar');
+        function updateHeaderBadge() {
+            const data = JSON.parse(localStorage.getItem('profilePageData') || '{}');
+            if (data.avatar) profileTopAvatar.src = data.avatar;
+            else profileTopAvatar.src = 'https://randomuser.me/api/portraits/men/32.jpg';
+            profileTopName.textContent = data.name && data.name.trim() ? data.name : 'Profile';
+        }
+        updateHeaderBadge();
+        window.addEventListener('storage', updateHeaderBadge);
+    })();
     </script>
 </body>
 </html> 
